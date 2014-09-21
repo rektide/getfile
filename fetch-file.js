@@ -12,9 +12,16 @@ var okCodes = [200, 201, 304];
 
 ['get', 'del', 'put', 'post', 'put', 'patch'].forEach(function(slot){
 	var fn= function(options, cb){
+		// insure we have a options
+		if(options instanceof String)
+			options= {url: options}
+		if(!options.url)
+			throw "No url specified"
+		// set method for options
 		options.method= options.method|| slot
+		// fallback to a filename based off url
 		if(!options.filename)
-			options.writeFile= false
+			options.filename= require('path').basename(options.url)
 
 		// look for existing
 		return Promise.settle([
